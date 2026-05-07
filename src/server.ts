@@ -10,6 +10,7 @@ import swaggerUi from 'swagger-ui-express';
 import { env, isProduction } from '@config/env';
 import { corsMiddleware } from '@middleware/cors';
 import { errorHandler, notFoundHandler } from '@middleware/error-handler';
+import { requestTimeout } from '@middleware/timeout';
 import apiRoutes from '@routes/index';
 import { buildOpenApiSpec } from '@/docs/swagger';
 
@@ -17,6 +18,7 @@ export function createServer() {
   const app = express();
 
   app.disable('x-powered-by');
+  app.use(requestTimeout(30_000));
   app.use(helmet({ crossOriginResourcePolicy: false }));
   app.use(corsMiddleware());
   app.use(express.json({ limit: '50mb' }));
