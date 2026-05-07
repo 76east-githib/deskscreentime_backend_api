@@ -7,7 +7,13 @@ import mongoose from "mongoose";
 
 export const del = asyncHandler(async (req: Request, res: Response) => {
   await connectDB();
-  const { data, year } = req.body;
+  const { data, year } = req.body || {};
+  if (!data || !data._id || !data.userId) {
+    return res.status(400).json({
+      success: false,
+      message: "Required fields missing: data._id, data.userId",
+    });
+  }
   const { _id, leaveTypes, userId } = data;
 
   try {

@@ -309,6 +309,11 @@ function convertController(source) {
     /new\s+URL\s*\(\s*req\.url\s*\)\.searchParams\.get\(\s*(['"][^'"\\]+['"])\s*\)/g,
     '(req.query[$1] as string | undefined)'
   );
+  // Fallback for `const url = new URL(req.url)` / `const { searchParams } = new URL(req.url)`.
+  content = content.replace(
+    /new\s+URL\s*\(\s*req\.url\s*\)/g,
+    "new URL(req.originalUrl, `http://${req.get('host') || 'localhost'}`)"
+  );
   content = content.replace(
     /req\.nextUrl\.searchParams\.get\(\s*(['"][^'"\\]+['"])\s*\)/g,
     '(req.query[$1] as string | undefined)'
@@ -374,6 +379,10 @@ const MANUAL_FIX_FILES = new Set([
   'task/create-task/controller.ts',
   'task/electron-create-task/controller.ts',
   'task/close-inactive-sessions/controller.ts',
+  'admin/update-user-status/controller.ts',
+  'superAdmin/update-company-status/controller.ts',
+  'admin/delete-leave/controller.ts',
+  'admin/get-project-detail/controller.ts',
 ]);
 
 function migrateControllers() {

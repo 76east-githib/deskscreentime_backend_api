@@ -8,10 +8,17 @@ import mongoose from "mongoose";
 
 export const post = asyncHandler(async (req: Request, res: Response) => {
   await connectDB();
-  let { page, per_page, startDate, endDate, projectId } = req.body;
-  var start = startDate.split("T")[0];
-  var end = endDate.split("T")[0];
-  let last7date = startDate.split("T")[0];
+  let { page, per_page } = req.body || {};
+  const { startDate, endDate, projectId } = req.body || {};
+  if (!startDate || !endDate || !projectId) {
+    return res.status(400).json({
+      success: false,
+      message: "Required fields missing: startDate, endDate, projectId",
+    });
+  }
+  const start = startDate.split("T")[0];
+  const end = endDate.split("T")[0];
+  const last7date = startDate.split("T")[0];
   try {
     const projectDetail = await Project.aggregate([
       {

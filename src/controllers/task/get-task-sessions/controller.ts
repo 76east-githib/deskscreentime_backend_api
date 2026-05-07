@@ -9,7 +9,7 @@ export const get = asyncHandler(async (req: Request, res: Response) => {
   await connectDB();
   try {
     // Get taskId from query string: /api/task/get-task-sessions?taskId=123
-    const { searchParams } = new URL(req.url);
+    const { searchParams } = new URL(req.originalUrl, `http://${req.get('host') || 'localhost'}`);
     const taskId = searchParams.get("taskId");
 
     if (!taskId || !mongoose.Types.ObjectId.isValid(taskId)) {
