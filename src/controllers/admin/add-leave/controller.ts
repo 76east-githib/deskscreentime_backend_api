@@ -254,7 +254,7 @@ export const get = asyncHandler(async (req: Request, res: Response) => {
   await connectDB();
   try {
     const moment = (await import("moment-timezone")).default;
-    const url = new URL(req.url);
+    const url = new URL(req.originalUrl, `http://${req.get('host') || 'localhost'}`);
     const userId = url.searchParams.get("userId");
     const date = url.searchParams.get("date") || new Date().toISOString().split("T")[0];
     const year = parseInt(url.searchParams.get("year") || date.split("-")[0], 10);
